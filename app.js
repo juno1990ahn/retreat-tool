@@ -6,7 +6,7 @@ var retreatFormDB = new sqlite3.Database('retreat.db');
 
 var latestVersion = 'v0.1';
 
-retreatFormDB.run("CREATE TABLE IF NOT EXISTS Registrants2013 ( \
+var createStmt = "CREATE TABLE IF NOT EXISTS Registrants2013 ( \
 		LastName 				TEXT,	\
 		FirstName 				TEXT,	\
 		Address 				TEXT,	\
@@ -15,7 +15,8 @@ retreatFormDB.run("CREATE TABLE IF NOT EXISTS Registrants2013 ( \
 		EmergencyContactName	TEXT,	\
 		EmergencyContactNumber	TEXT,	\
 		LegalSignatureRequired	INTEGER \
-	);");
+	);";
+retreatFormDB.run(createStmt);
 
 var app = express();
 
@@ -48,10 +49,13 @@ app.post('/' + latestVersion + '/retreat/registrants', function(req, res) {
 });
 
 app.get('/' + latestVersion + '/retreat/registrants/delete', function(req,res) {
-	var sqlStmt = "DROP TABLE IF EXISTS Registrants2013";
-	retreatFormDB.run(sqlStmt,function(err){
-		var code = err?500:200;
-		res.send(code);
+	retreatFormDB.serialize(function() {
+		var sqlStmt = "DROP TABLE IF EXISTS Registrants2013";
+		retreatFormDB.run(sqlStmt);
+		retreatFormDB.run(createStmt,function(err){
+			var code = err?500:200;
+			res.send(code);
+		});
 	});
 });
 
