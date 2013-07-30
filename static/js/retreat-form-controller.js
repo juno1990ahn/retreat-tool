@@ -1,6 +1,6 @@
 //TODO make config for all rows, format, callbacks
 
-function refreshTable() {
+var refreshTable = function() {
 	$.ajax({
 		type: "GET",
 		url: "/v0.1/retreat/registrants",
@@ -27,8 +27,12 @@ function refreshTable() {
 	});
 };
 
-function clearFields() {
-
+var clearFields = function() {
+	$(':input','.rt-form-add')
+		.not(':button, :submit, :reset, :hidden')
+		.val('')
+		.removeAttr('checked')
+		.removeAttr('selected');
 };
 
 (function() {
@@ -47,12 +51,15 @@ function clearFields() {
 	$('.rt-nav-data').click(function() {
 		$('.rt-form-data').show();
 		$('.rt-form-add').hide();
+		refreshTable();
 	});
 
 	$('.rt-nav-add').click(function() {
 		$('.rt-form-data').hide();
 		$('.rt-form-add').show();
 	});
+
+	$('.rt-form-clear').click(clearFields);
 
 	/* ajax submit for new registrant */
 	// TODO: add client side form validation

@@ -47,8 +47,16 @@ app.post('/' + latestVersion + '/retreat/registrants', function(req, res) {
 	);
 });
 
+app.get('/' + latestVersion + '/retreat/registrants/delete', function(req,res) {
+	var sqlStmt = "DROP TABLE IF EXISTS Registrants2013";
+	retreatFormDB.run(sqlStmt,function(err){
+		var code = err?500:200;
+		res.send(code);
+	});
+});
+
 app.get('/' + latestVersion + '/retreat/registrants', function(req, res) {
-	var sqlStmt = "SELECT * FROM REgistrants2013";
+	var sqlStmt = "SELECT * FROM Registrants2013";
 	var payload = [];
 	retreatFormDB.each(sqlStmt,
 		function(err, row) {
