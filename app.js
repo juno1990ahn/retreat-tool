@@ -25,9 +25,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/' + latestVersion + '/retreat/registrants', function(req, res) {
-	retreatFormDB.run("INSERT INTO Registrants2013 VALUES ( \
-			
-		");
+
 });
 
 app.get('/' + latestVersion + '/retreat/registrants', function(req, res) {
