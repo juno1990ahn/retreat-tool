@@ -1,13 +1,142 @@
 <!DOCTYPE>
 <html>
 	<head>
+		<meta charset="utf-8"> 
 		<title>Retreat Forms</title>
 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+		<link href="/css/retreat-form.css" rel="stylesheet">
 	</head>
 
 	<body>
-		
+		<div class="rt-form-main">
+			<h4 class="rt-header">KEPC Retreat</h4>
 
+			<ul class="nav nav-tabs rt-form-nav-tabs">
+				<li class="rt-nav-data active"><a href="#">Registrants</a></li>
+				<li class="rt-nav-add"><a href="#">+ Add</a></li>
+			</ul>
+
+			<div class="rt-form-tab-body">
+				<div class="rt-form-data">
+					<table class="rt-form-table table table-striped">
+						<thead>
+							<tr>
+								<th>Last Name</th>
+								<th>First Name</th>
+								<th>Address</th>
+								<th>Phone Number</th>
+								<th>Amount Paid</th>
+								<th>Emergency Contact Name</th>
+								<th>Emergency Contact Number</th>
+								<th>Legal Signature Required</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							<tr>
+								<td>Ahn</td>
+								<td>June Iee</td>
+								<td>4118 148th St SW #J4 Lynnwood WA 98087</td>
+								<td>(425) 773 - 4852</td>
+								<td>$125.00</td>
+								<td>Ji Sun Moon</td>
+								<td>(425) 773 - 8024</td>
+								<td>No</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="rt-form-add form-horizontal">
+					<div class="rt-alert-add-server-error rt-form-alert alert alert-block alert-error fade in">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						<strong>Error</strong>
+						 Try again with a better network connection or tell Juni to fix the dang thing.
+					</div>
+
+					<div class="rt-alert-add-client-error rt-form-alert alert alert-block alert-error fade in">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						<strong>Error</strong>
+						 Your input is either not formatted correctly or something is missing.
+					</div>
+
+					<div class="rt-alert-add-success rt-form-alert alert alert-block alert-success fade in">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						<strong>Success</strong>
+						 Registrant added successfully.
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="first-name">First Name</label>
+						<div class="controls rt-form-controls">
+							<input type="text" class="input-medium" id="first-name">
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="last-name">Last Name</label>
+						<div class="controls rt-form-controls">
+							<input type="text" class="input-medium" id="last-name">
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="address">Address</label>
+						<div class="controls rt-form-controls">
+							<input type="text" class="input-xlarge" id="address">
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="phone-number">Phone Number</label>
+						<div class="controls rt-form-controls">
+							<input type="text" class="input-medium" id="phone-number">
+							<p class="help-block"> i.e. 4257734852</p>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="amount-paid">Amount Paid</label>
+						<div class="controls rt-form-controls">
+							$ <input type="text" class="input-small" id="amount-paid">
+							<p class="help-block"> i.e. 40.00</p>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="em-contact-name">Emergency Contact Name</label>
+						<div class="controls rt-form-controls">
+							<input type="text" class="input-medium" id="em-contact-name">
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="em-contact-number">Emergency Contact Number</label>
+						<div class="controls rt-form-controls">
+							<input type="text" class="input-medium" id="em-contact-number">
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="under18">Legal Signature Required</label>
+						<div class="controls">
+							<label class="checkbox">
+								<input type="checkbox" id="under18" value="1">
+								Checkbox if registrant is under 18
+							</label>
+						</div>
+					</div>
+
+					<div class="form-actions">
+						<button class="rt-form-add-btn btn btn-primary" data-loading-text="Adding...">Add Registrant</button>
+						<button class="rt-form-clear btn">Clear</button>
+					</div>
+				</div><!-- end add tab -->
+			</div><!-- end tab body -->
+		</div>
+		
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+		<script src="/js/retreat-form-controller.js"></script>
 	</body>
 </html>

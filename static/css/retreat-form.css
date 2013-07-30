@@ -1,0 +1,42 @@
+.rt-header {
+	margin: 5px 0 !important;
+	float: right;
+}
+
+.rt-form-main {
+	margin: 20px 20px;
+	min-width: 1240px;
+}
+
+.rt-form-nav-tabs {
+	margin-bottom: 0 !important;
+}
+
+.rt-form-table {
+	font-size: 12px !important;
+}
+
+.rt-form-tab-body {
+	padding-top: 25px;
+	border-width: 0 1px 1px 1px;
+	border-style: solid;
+	border-color: #ddd;
+}
+
+.rt-form-tab-body .form-actions {
+	margin-bottom: 0;
+}
+
+.rt-form-controls {
+	padding-top: 5px;
+}
+
+.rt-form-add {
+	display: none;
+}
+
+.rt-form-alert {
+	display: none;
+	margin-left: 180px;
+	width: 550px;
+}
