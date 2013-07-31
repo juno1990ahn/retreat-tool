@@ -8,19 +8,19 @@ var fs = require('fs');
 var pg = require('pg');
 
 var latestVersion = 'v0.1';
-var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5000'
-var client = new pg.Client(connectionString);
+console.log(process.env.DATABASE_URL);
+var client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 
 var createStmt = "CREATE TABLE IF NOT EXISTS Registrants2013 ( \
-		LastName 				TEXT,	\
-		FirstName 				TEXT,	\
-		Address 				TEXT,	\
-		PhoneNumber				TEXT,	\
-		AmountPaid				INTEGER,	\
-		EmergencyContactName	TEXT,	\
-		EmergencyContactNumber	TEXT,	\
-		LegalSignatureRequired	INTEGER \
+		LastName 				varchar(255),	\
+		FirstName 				varchar(255),	\
+		Address 				varchar(255),	\
+		PhoneNumber				varchar(255),	\
+		AmountPaid				integer,	\
+		EmergencyContactName	varchar(255),	\
+		EmergencyContactNumber	varchar(255),	\
+		LegalSignatureRequired	integer \
 	);";
 client.query(createStmt);
 
