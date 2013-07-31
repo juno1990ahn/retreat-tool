@@ -1,15 +1,19 @@
-//TODO make config for all rows, format, callbacks
+// TODO make config for all rows, format, callbacks
+// sort rows
+// edit rows
+// fix alerts not showing up second time
 
 var refreshTable = function() {
+	$('.rt-form-table-row').remove();
 	$.ajax({
 		type: "GET",
 		url: "/v0.1/retreat/registrants",
 		success: function(data) {
-			console.log(data);
 			for (var index in data) {
 				var row = data[index];
 				var newRow = $('.rt-row-template').clone(true);
 				newRow.removeClass('rt-row-template');
+				newRow.addClass('rt-form-table-row');
 				newRow.find('.ln').html(row.LastName);
 				newRow.find('.fn').html(row.FirstName);
 				newRow.find('.ad').html(row.Address);
@@ -59,7 +63,38 @@ var clearFields = function() {
 		$('.rt-form-add').show();
 	});
 
+	/* Clear form button */
 	$('.rt-form-clear').click(clearFields);
+
+	/* Remove row in database */
+	$('.rt-row-remove').click(function() {
+		var parent = $($($(this).parent()).parent());
+		var data = {
+			firstName : parent.find('.fn').html(),
+			lastName : parent.find('.ln').html()
+		};
+		$.ajax({
+			type: "GET",
+			url: "/v0.1/retreat/registrants/delete",
+			data: data,
+			error: function() {
+				$('.rt-alert-delete-error').slideDown();
+			}
+		});
+		parent.slideUp();
+
+	});
+
+	/* Export database to csv */
+	$('.rt-export-button').click(function() {
+		$.ajax({
+			type: "GET",
+			url: "/v0.1/retreat/registrants/export",
+			success: function(data) {
+				document.location.href = '/download/' + data.fileName;
+			}
+		});
+	}); 
 
 	/* ajax submit for new registrant */
 	// TODO: add client side form validation

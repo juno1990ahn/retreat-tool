@@ -18,14 +18,22 @@
 
 			<div class="rt-form-tab-body">
 				<div class="rt-form-data">
+					<button type="button" class="rt-export-button btn btn-default btn-mini">Export CSV</button>
 					<div class="rt-alert-retrieve-server-error rt-form-alert alert alert-block alert-error fade in">
 						<button type="button" class="close" data-dismiss="alert">×</button>
 						<strong>Error</strong>
 						 Was not able to retrieve data.
 					</div>
+
+					<div class="rt-alert-delete-error rt-form-alert alert alert-block alert-error fade in">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						<strong>Error</strong>
+						 Was not able to delete data.
+					</div>
 					<table class="rt-form-table table table-striped">
 						<thead>
 							<tr>
+								<th class="de"></th>
 								<th>Last Name</th>
 								<th>First Name</th>
 								<th>Address</th>
@@ -39,6 +47,7 @@
 
 						<tbody class="rt-form-table-body">
 							<tr class="rt-row-template">
+								<td class="de"><a href="#" class="rt-row-remove"><span class="badge">X</span></a></td>
 								<td class="ln"></td>
 								<td class="fn"></td>
 								<td class="ad"></td>

@@ -1,6 +1,8 @@
 // TODO : sanitize sql statements
+// TODO : check if person was already added
 
 var express = require("express");
+var fs = require('fs');
 var sqlite3 = require("sqlite3").verbose();
 var retreatFormDB = new sqlite3.Database('retreat.db');
 
@@ -28,6 +30,10 @@ app.get('/', function(req, res) {
 	res.sendfile('views/retreat-forms.html');
 });
 
+app.get('/download/:filename', function(req, res) {
+	res.sendfile(req.params.filename);
+});
+
 app.post('/' + latestVersion + '/retreat/registrants', function(req, res) {
 	var sqlStmt = "INSERT INTO Registrants2013 VALUES ('"
 		+ req.body.lastName + "','"
@@ -49,14 +55,25 @@ app.post('/' + latestVersion + '/retreat/registrants', function(req, res) {
 });
 
 app.get('/' + latestVersion + '/retreat/registrants/delete', function(req,res) {
-	retreatFormDB.serialize(function() {
-		var sqlStmt = "DROP TABLE IF EXISTS Registrants2013";
-		retreatFormDB.run(sqlStmt);
-		retreatFormDB.run(createStmt,function(err){
-			var code = err?500:200;
-			res.send(code);
+	if (req.query.lastName && req.query.firstName) {
+		retreatFormDB.serialize(function() {
+			var sqlStmt = "DELETE FROM Registrants2013 WHERE FirstName='" + req.query.firstName + "' AND LASTNAME='" + req.query.lastName + "';";
+			retreatFormDB.run(sqlStmt);
+			retreatFormDB.run(createStmt,function(err){
+				var code = err?500:200;
+				res.send(code);
+			});
 		});
-	});
+	}else {
+		// retreatFormDB.serialize(function() {
+		// 	var sqlStmt = "DELETE FROM Registrants2013";
+		// 	retreatFormDB.run(sqlStmt);
+		// 	retreatFormDB.run(createStmt,function(err){
+		// 		var code = err?500:200;
+		// 		res.send(code);
+		// 	});
+		// });
+	}
 });
 
 app.get('/' + latestVersion + '/retreat/registrants', function(req, res) {
@@ -68,7 +85,44 @@ app.get('/' + latestVersion + '/retreat/registrants', function(req, res) {
 		},
 		function(err, num) {
 			console.log(num + ' rows retrieved');
-			res.send(payload);
+			if(err) {
+		        res.send(500);
+		    } else {
+		        res.send(payload);
+		    }
+		}
+	);
+});
+
+app.get('/' + latestVersion + '/retreat/registrants/export', function(req,res) {
+	var sqlStmt = "SELECT * FROM Registrants2013";
+	var payload = "Last Name, First Name,Address,Phone Number,Amount Paid, Emergency Contact Name, Emergency Contact Number, Legal Signature Required\n";
+	retreatFormDB.each(sqlStmt,
+		function(err, row) {
+			var temp = "";
+			temp += row.LastName + ',';
+			temp += row.FirstName + ',';
+			temp += row.Address + ',';
+			temp += row.PhoneNumber + ',';
+			temp += row.AmountPaid / 100 + ',';
+			temp += row.EmergencyContactName + ',';
+			temp += row.EmergencyContactNumber + ',';
+			temp += row.LegalSignatureRequired?'Yes':'No';
+
+			payload += temp + '\n';
+		},
+		function(err, num) {
+			console.log(num + ' rows retrieved');
+			var today = new Date();
+			var fileName = "registrants" + (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear() + ".csv";
+			fs.writeFile(fileName, payload,function(err){
+				if(err) {
+					console.log(err);
+			        res.send(500);
+			    } else {
+			        res.send({fileName: fileName});
+			    }
+			});
 		}
 	);
 });

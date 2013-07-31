@@ -5,7 +5,12 @@
 
 .rt-form-main {
 	margin: 20px 20px;
-	min-width: 1240px;
+	min-width: 960px;
+}
+
+.rt-export-button {
+	float:right;
+	margin-right:50px;
 }
 
 .rt-form-nav-tabs {
@@ -36,6 +41,10 @@
 	display: none;
 }
 
+.rt-row-remove >span:hover {
+	background-color: #E8592A;
+}
+
 .rt-row-template {
 	display:none;
 }
@@ -44,4 +53,8 @@
 	display: none;
 	margin-left: 180px;
 	width: 550px;
+}
+
+.de {
+	width:30px;
 }
