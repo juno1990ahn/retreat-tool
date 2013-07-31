@@ -39,4 +39,4 @@ Thumbs.db
 
 # Other files #
 ###############
-.csv
+*.csv
