@@ -1,12 +1,16 @@
 // TODO : sanitize sql statements
 // TODO : check if person was already added
+// check for commas in csv
+// sometimes doesn't return all data for table
 
 var express = require("express");
 var fs = require('fs');
-var sqlite3 = require("sqlite3").verbose();
-var retreatFormDB = new sqlite3.Database('retreat.db');
+var pg = require('pg');
 
 var latestVersion = 'v0.1';
+var connectionString = process.env.DATABASE_URL || 'postgres://localhost:5000'
+var client = new pg.Client(connectionString);
+client.connect();
 
 var createStmt = "CREATE TABLE IF NOT EXISTS Registrants2013 ( \
 		LastName 				TEXT,	\
@@ -18,7 +22,7 @@ var createStmt = "CREATE TABLE IF NOT EXISTS Registrants2013 ( \
 		EmergencyContactNumber	TEXT,	\
 		LegalSignatureRequired	INTEGER \
 	);";
-retreatFormDB.run(createStmt);
+client.query(createStmt);
 
 var app = express();
 
@@ -46,7 +50,7 @@ app.post('/' + latestVersion + '/retreat/registrants', function(req, res) {
 		+ req.body.under18
 		+ ");";
 
-	retreatFormDB.run(sqlStmt, 
+	client.query(sqlStmt, 
 		function(err) {
 			var code = err?500:200;
 			res.send(code);
@@ -56,13 +60,10 @@ app.post('/' + latestVersion + '/retreat/registrants', function(req, res) {
 
 app.get('/' + latestVersion + '/retreat/registrants/delete', function(req,res) {
 	if (req.query.lastName && req.query.firstName) {
-		retreatFormDB.serialize(function() {
-			var sqlStmt = "DELETE FROM Registrants2013 WHERE FirstName='" + req.query.firstName + "' AND LASTNAME='" + req.query.lastName + "';";
-			retreatFormDB.run(sqlStmt);
-			retreatFormDB.run(createStmt,function(err){
-				var code = err?500:200;
-				res.send(code);
-			});
+		var sqlStmt = "DELETE FROM Registrants2013 WHERE FirstName='" + req.query.firstName + "' AND LASTNAME='" + req.query.lastName + "';";
+		client.query(sqlStmt,function(err){
+			var code = err?500:200;
+			res.send(code);
 		});
 	}else {
 		// retreatFormDB.serialize(function() {
@@ -79,52 +80,52 @@ app.get('/' + latestVersion + '/retreat/registrants/delete', function(req,res) {
 app.get('/' + latestVersion + '/retreat/registrants', function(req, res) {
 	var sqlStmt = "SELECT * FROM Registrants2013";
 	var payload = [];
-	retreatFormDB.each(sqlStmt,
-		function(err, row) {
-			payload.push(row);
-		},
-		function(err, num) {
-			console.log(num + ' rows retrieved');
-			if(err) {
-		        res.send(500);
-		    } else {
-		        res.send(payload);
-		    }
-		}
-	);
+	var query = client.query(sqlStmt);
+	query.on('row', function(row) {
+		payload.push(row);
+	});
+	query.on('error', function(error) {
+		console.error(error);
+		res.send(500);
+	});
+	query.on('end',function(result) {
+		res.send(payload);
+	});
 });
 
 app.get('/' + latestVersion + '/retreat/registrants/export', function(req,res) {
 	var sqlStmt = "SELECT * FROM Registrants2013";
 	var payload = "Last Name, First Name,Address,Phone Number,Amount Paid, Emergency Contact Name, Emergency Contact Number, Legal Signature Required\n";
-	retreatFormDB.each(sqlStmt,
-		function(err, row) {
-			var temp = "";
-			temp += row.LastName + ',';
-			temp += row.FirstName + ',';
-			temp += row.Address + ',';
-			temp += row.PhoneNumber + ',';
-			temp += row.AmountPaid / 100 + ',';
-			temp += row.EmergencyContactName + ',';
-			temp += row.EmergencyContactNumber + ',';
-			temp += row.LegalSignatureRequired?'Yes':'No';
+	var query = client.query(sqlStmt);
+	query.on('row',function(row) {
+		var temp = "";
+		temp += row.LastName + ',';
+		temp += row.FirstName + ',';
+		temp += row.Address + ',';
+		temp += row.PhoneNumber + ',';
+		temp += row.AmountPaid / 100 + ',';
+		temp += row.EmergencyContactName + ',';
+		temp += row.EmergencyContactNumber + ',';
+		temp += row.LegalSignatureRequired?'Yes':'No';
 
-			payload += temp + '\n';
-		},
-		function(err, num) {
-			console.log(num + ' rows retrieved');
-			var today = new Date();
-			var fileName = "registrants" + (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear() + ".csv";
-			fs.writeFile(fileName, payload,function(err){
-				if(err) {
-					console.log(err);
-			        res.send(500);
-			    } else {
-			        res.send({fileName: fileName});
-			    }
-			});
-		}
-	);
+		payload += temp + '\n';
+	});
+	query.on('error', function(error) {
+		console.error(error);
+		res.send(500);
+	});
+	query.on('end', function(result) {
+		var today = new Date();
+		var fileName = "registrants" + (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear() + ".csv";
+		fs.writeFile(fileName, payload,function(err){
+			if(err) {
+				console.error(err);
+		        res.send(500);
+		    } else {
+		        res.send({fileName: fileName});
+		    }
+		});
+	});
 });
 
 var port = process.env.PORT || 5000;
