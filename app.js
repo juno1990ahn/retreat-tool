@@ -13,14 +13,14 @@ var client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 
 var createStmt = "CREATE TABLE IF NOT EXISTS Registrants2013 ( \
-		LastName 				varchar(255),	\
-		FirstName 				varchar(255),	\
-		Address 				varchar(255),	\
-		PhoneNumber				varchar(255),	\
-		AmountPaid				integer,	\
-		EmergencyContactName	varchar(255),	\
-		EmergencyContactNumber	varchar(255),	\
-		LegalSignatureRequired	integer \
+		lastname 				varchar(255),	\
+		firstname 				varchar(255),	\
+		address 				varchar(255),	\
+		phonenumber				varchar(255),	\
+		amountpaid				integer,	\
+		emergencycontactname	varchar(255),	\
+		emergencycontactnumber	varchar(255),	\
+		legalsignaturerequired	integer \
 	);";
 client.query(createStmt);
 
@@ -60,7 +60,7 @@ app.post('/' + latestVersion + '/retreat/registrants', function(req, res) {
 
 app.get('/' + latestVersion + '/retreat/registrants/delete', function(req,res) {
 	if (req.query.lastName && req.query.firstName) {
-		var sqlStmt = "DELETE FROM Registrants2013 WHERE FirstName='" + req.query.firstName + "' AND LASTNAME='" + req.query.lastName + "';";
+		var sqlStmt = "DELETE FROM Registrants2013 WHERE firstname='" + req.query.firstName + "' AND lastname='" + req.query.lastName + "';";
 		client.query(sqlStmt,function(err){
 			var code = err?500:200;
 			res.send(code);
@@ -82,6 +82,7 @@ app.get('/' + latestVersion + '/retreat/registrants', function(req, res) {
 	var payload = [];
 	var query = client.query(sqlStmt);
 	query.on('row', function(row) {
+		console.log("ROW: "+ JSON.stringify(row));
 		payload.push(row);
 	});
 	query.on('error', function(error) {
@@ -99,14 +100,14 @@ app.get('/' + latestVersion + '/retreat/registrants/export', function(req,res) {
 	var query = client.query(sqlStmt);
 	query.on('row',function(row) {
 		var temp = "";
-		temp += row.LastName + ',';
-		temp += row.FirstName + ',';
-		temp += row.Address + ',';
-		temp += row.PhoneNumber + ',';
-		temp += row.AmountPaid / 100 + ',';
-		temp += row.EmergencyContactName + ',';
-		temp += row.EmergencyContactNumber + ',';
-		temp += row.LegalSignatureRequired?'Yes':'No';
+		temp += row.lastname + ',';
+		temp += row.firstname + ',';
+		temp += row.address + ',';
+		temp += row.phonenumber + ',';
+		temp += row.amountpaid / 100 + ',';
+		temp += row.emergencycontactname + ',';
+		temp += row.emergencycontactnumber + ',';
+		temp += row.legalsignaturerequired?'Yes':'No';
 
 		payload += temp + '\n';
 	});

@@ -14,14 +14,14 @@ var refreshTable = function() {
 				var newRow = $('.rt-row-template').clone(true);
 				newRow.removeClass('rt-row-template');
 				newRow.addClass('rt-form-table-row');
-				newRow.find('.ln').html(row.LastName);
-				newRow.find('.fn').html(row.FirstName);
+				newRow.find('.ln').html(row.lastname);
+				newRow.find('.fn').html(row.firstname);
 				newRow.find('.ad').html(row.Address);
-				newRow.find('.pn').html('(' + row.PhoneNumber.substring(0,3) + ') ' + row.PhoneNumber.substring(3,6) + ' - ' + row.PhoneNumber.substring(6));
-				newRow.find('.ap').html('$' + (row.AmountPaid / 100).toFixed(2));
-				newRow.find('.ena').html(row.EmergencyContactName);
-				newRow.find('.enu').html('(' + row.EmergencyContactNumber.substring(0,3) + ') ' + row.EmergencyContactNumber.substring(3,6) + ' - ' + row.EmergencyContactNumber.substring(6));
-				newRow.find('.le').html(row.LegalSignatureRequired? 'Yes':'No');
+				newRow.find('.pn').html('(' + row.phonenumber.substring(0,3) + ') ' + row.phonenumber.substring(3,6) + ' - ' + row.phonenumber.substring(6));
+				newRow.find('.ap').html('$' + (row.amountpaid / 100).toFixed(2));
+				newRow.find('.ena').html(row.emergencycontactname);
+				newRow.find('.enu').html('(' + row.emergencycontactnumber.substring(0,3) + ') ' + row.emergencycontactnumber.substring(3,6) + ' - ' + row.emergencycontactnumber.substring(6));
+				newRow.find('.le').html(row.legalsignaturerequired? 'Yes':'No');
 				$('.rt-form-table-body').append(newRow);
 			}
 		},
