@@ -16,7 +16,7 @@ var refreshTable = function() {
 				newRow.addClass('rt-form-table-row');
 				newRow.find('.ln').html(row.lastname);
 				newRow.find('.fn').html(row.firstname);
-				newRow.find('.ad').html(row.Address);
+				newRow.find('.ad').html(row.address);
 				newRow.find('.pn').html('(' + row.phonenumber.substring(0,3) + ') ' + row.phonenumber.substring(3,6) + ' - ' + row.phonenumber.substring(6));
 				newRow.find('.ap').html('$' + (row.amountpaid / 100).toFixed(2));
 				newRow.find('.ena').html(row.emergencycontactname);
