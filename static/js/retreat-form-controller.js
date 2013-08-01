@@ -20,7 +20,7 @@ var refreshTable = function() {
 				newRow.find('.pn').html('(' + row.phonenumber.substring(0,3) + ') ' + row.phonenumber.substring(3,6) + ' - ' + row.phonenumber.substring(6));
 				newRow.find('.ap').html('$' + (row.amountpaid / 100).toFixed(2));
 				newRow.find('.ena').html(row.emergencycontactname);
-				newRow.find('.enu').html('(' + row.emergencycontactnumber.substring(0,3) + ') ' + row.emergencycontactnumber.substring(3,6) + ' - ' + row.emergencycontactnumber.substring(6));
+				newRow.find('.enu').html(row.emergencycontactnumber?'(' + row.emergencycontactnumber.substring(0,3) + ') ' + row.emergencycontactnumber.substring(3,6) + ' - ' + row.emergencycontactnumber.substring(6):"");
 				newRow.find('.le').html(row.legalsignaturerequired? 'Yes':'No');
 				$('.rt-form-table-body').append(newRow);
 			}
