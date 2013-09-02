@@ -34,4 +34,24 @@ var refreshTable = function() {
 			}
 		});
 	}); 
+
+	/* Remove row in database */
+	$('.rt-row-remove').click(function() {
+		var parent = $($($(this).parent()).parent());
+		var data = {
+			question1 : parent.find('.q1').html(),
+			question2 : parent.find('.q2').html(),
+			question3 : parent.find('.q3').html()
+		};
+		$.ajax({
+			type: "GET",
+			url: "/v0.1/retreat/evaluations/delete",
+			data: data,
+			error: function() {
+				$('.rt-alert-delete-error').slideDown();
+			}
+		});
+		parent.slideUp();
+
+	});
 })();
