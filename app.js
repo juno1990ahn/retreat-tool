@@ -135,21 +135,14 @@ app.get('/' + latestVersion + '/retreat/evaluations/delete', function(req,res) {
 	var escape = function(str) {
 		return str.replace(/'/g, "''");
 	};
-	if (req.query.question1 && req.query.question2 && req.query.question3) {
-		var sqlStmt = "DELETE FROM Evaluation2013 WHERE question1='" + escape(req.query.question1) + "' AND question2='" + escape(req.query.question2) + "' AND question3='" + escape(req.query.question3) +"';";
+	if (req.query.question1 || req.query.question2 || req.query.question3) {
+		var sqlStmt = "DELETE FROM Evaluation2013 WHERE question1='" + escape(req.query.question1) + "' AND question2='" + escape(req.query.question2) + "' AND question3='" + escape(req.query.question3) + "';";
 		client.query(sqlStmt,function(err){
 			var code = err?500:200;
 			res.send(code);
 		});
 	}else {
-		// retreatFormDB.serialize(function() {
-		// 	var sqlStmt = "DELETE FROM Registrants2013";
-		// 	retreatFormDB.run(sqlStmt);
-		// 	retreatFormDB.run(createStmt,function(err){
-		// 		var code = err?500:200;
-		// 		res.send(code);
-		// 	});
-		// });
+		res.send(200);
 	}
 });
 
