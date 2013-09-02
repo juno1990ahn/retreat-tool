@@ -98,7 +98,7 @@ app.get('/evaluation/view', function(req, res) {
 });
 
 app.post('/' + latestVersion + '/retreat/evaluations/submit', function(req, res) {
-	console.log(req.body);
+	console.log(JSON.stringify(req.body));
 	if (req.body.question1.trim() == '' &&
 		req.body.question2.trim() == '' &&
 		req.body.question3.trim() == '') {
@@ -106,10 +106,16 @@ app.post('/' + latestVersion + '/retreat/evaluations/submit', function(req, res)
 		return;
 	}
 
+	var escape = function(str) {
+		return str.replace(/'/g, "''");
+	};
+
+	console.log(escape(req.body.question1));
+
 	var sqlStmt = "INSERT INTO Evaluation2013 VALUES ('"
-		+ req.body.question1 + "','"
-		+ req.body.question2 + "','"
-		+ req.body.question3
+		+ escape(req.body.question1) + "','"
+		+ escape(req.body.question2) + "','"
+		+ escape(req.body.question3)
 		+ "');";
 
 	client.query(sqlStmt, 
