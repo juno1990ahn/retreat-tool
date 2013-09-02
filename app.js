@@ -27,11 +27,18 @@ var createRegTable = "CREATE TABLE IF NOT EXISTS Registrants2013 ( \
 client.query(createRegTable);
 
 var createEvalTable = "CREATE TABLE IF NOT EXISTS Evaluation2013 ( \
-		question1 				varchar(255),	\
-		question2 				varchar(255),	\
-		question3 				varchar(255) 	\
+		question1 				text,	\
+		question2 				text,	\
+		question3 				text 	\
 	);";
 client.query(createEvalTable);
+
+var query = "ALTER TABLE Evaluation2013 ALTER COLUMN question1 TYPE text";
+client.query(query);
+query = "ALTER TABLE Evaluation2013 ALTER COLUMN question2 TYPE text";
+client.query(query);
+query = "ALTER TABLE Evaluation2013 ALTER COLUMN question3 TYPE text";
+client.query(query);
 
 var app = express();
 
