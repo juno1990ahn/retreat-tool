@@ -33,13 +33,6 @@ var createEvalTable = "CREATE TABLE IF NOT EXISTS Evaluation2013 ( \
 	);";
 client.query(createEvalTable);
 
-var query = "ALTER TABLE Evaluation2013 ALTER COLUMN question1 TYPE text";
-client.query(query);
-query = "ALTER TABLE Evaluation2013 ALTER COLUMN question2 TYPE text";
-client.query(query);
-query = "ALTER TABLE Evaluation2013 ALTER COLUMN question3 TYPE text";
-client.query(query);
-
 var app = express();
 
 app.use(express.bodyParser());
