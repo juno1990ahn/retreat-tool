@@ -1,18 +1,20 @@
 // TODO : sanitize sql statements
 // TODO : check if person was already added
 // check for commas in csv
+// handle empty fields server side
 // sometimes doesn't return all data for table
+// add admin access
 
 var express = require("express");
 var fs = require('fs');
 var pg = require('pg');
 
 var latestVersion = 'v0.1';
-console.log(process.env.DATABASE_URL);
-var client = new pg.Client(process.env.DATABASE_URL);
+var db_url = process.env.DATABASE_URL;
+var client = new pg.Client(db_url);
 client.connect();
 
-var createStmt = "CREATE TABLE IF NOT EXISTS Registrants2013 ( \
+var createRegTable = "CREATE TABLE IF NOT EXISTS Registrants2013 ( \
 		lastname 				varchar(255),	\
 		firstname 				varchar(255),	\
 		address 				varchar(255),	\
@@ -22,7 +24,14 @@ var createStmt = "CREATE TABLE IF NOT EXISTS Registrants2013 ( \
 		emergencycontactnumber	varchar(255),	\
 		legalsignaturerequired	integer \
 	);";
-client.query(createStmt);
+client.query(createRegTable);
+
+var createEvalTable = "CREATE TABLE IF NOT EXISTS Evaluation2013 ( \
+		question1 				varchar(255),	\
+		question2 				varchar(255),	\
+		question3 				varchar(255) 	\
+	);";
+client.query(createEvalTable);
 
 var app = express();
 
@@ -32,6 +41,87 @@ app.use(express.static(__dirname + '/static'));
 
 app.get('/', function(req, res) {
 	res.sendfile('views/retreat-forms.html');
+});
+
+app.get('/evaluation', function(req, res) {
+	res.sendfile('views/evaluation.html');
+});
+
+app.get('/' + latestVersion + '/retreat/evaluations', function(req, res) {
+	var sqlStmt = "SELECT * FROM Evaluation2013";
+	var payload = [];
+	var query = client.query(sqlStmt);
+	query.on('row', function(row) {
+		console.log("ROW: "+ JSON.stringify(row));
+		payload.push(row);
+	});
+	query.on('error', function(error) {
+		console.error(error);
+		res.send(500);
+	});
+	query.on('end',function(result) {
+		res.send(payload);
+	});
+});
+
+app.get('/' + latestVersion + '/retreat/evaluations/export', function(req, res) {
+	var sqlStmt = "SELECT * FROM Evaluation2013";
+	var payload = "What was good about the retreat?, What did you learn? , What suggestions do you have for future retreat?\n";
+	var query = client.query(sqlStmt);
+	query.on('row',function(row) {
+		var temp = "";
+		temp += row.question1 + ',';
+		temp += row.question2 + ',';
+		temp += row.question3;
+		payload += temp + '\n';
+	});
+	query.on('error', function(error) {
+		console.error(error);
+		res.send(500);
+	});
+	query.on('end', function(result) {
+		var today = new Date();
+		var fileName = "evaluation" + (today.getMonth() + 1) + "-" + today.getDate() + "-" + today.getFullYear() + ".csv";
+		fs.writeFile(fileName, payload,function(err){
+			if(err) {
+				console.error(err);
+		        res.send(500);
+		    } else {
+		        res.send({fileName: fileName});
+		    }
+		});
+	});
+});
+
+app.get('/evaluation/view', function(req, res) {
+	res.sendfile('views/evaluation-admin.html');
+});
+
+app.post('/' + latestVersion + '/retreat/evaluations/submit', function(req, res) {
+	console.log(req.body);
+	if (req.body.question1.trim() == '' &&
+		req.body.question2.trim() == '' &&
+		req.body.question3.trim() == '') {
+		res.sendfile('views/evaluation-typ.html');
+		return;
+	}
+
+	var sqlStmt = "INSERT INTO Evaluation2013 VALUES ('"
+		+ req.body.question1 + "','"
+		+ req.body.question2 + "','"
+		+ req.body.question3
+		+ "');";
+
+	client.query(sqlStmt, 
+		function(err) {
+			if (err) {
+				console.log(err);
+				res.send(500);
+			}else {
+				res.sendfile('views/evaluation-typ.html');
+			}
+		}
+	);
 });
 
 app.get('/download/:filename', function(req, res) {

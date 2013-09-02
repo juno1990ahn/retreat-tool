@@ -2,6 +2,8 @@
 // sort rows
 // edit rows
 // fix alerts not showing up second time
+// handle client side empty fields
+// for deleting, give a are u sure dialog
 
 var refreshTable = function() {
 	$('.rt-form-table-row').remove();
