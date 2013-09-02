@@ -133,6 +133,7 @@ app.post('/' + latestVersion + '/retreat/evaluations/submit', function(req, res)
 app.get('/' + latestVersion + '/retreat/evaluations/delete', function(req,res) {
 	console.log(req.query);
 	var escape = function(str) {
+		str = str.replace("&amp;", "&");
 		return str.replace(/'/g, "''");
 	};
 	if (req.query.question1 || req.query.question2 || req.query.question3) {
